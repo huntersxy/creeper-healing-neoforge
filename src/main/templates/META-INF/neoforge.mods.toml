@@ -8,7 +8,7 @@ modLoader="javafml" #mandatory
 loaderVersion="${loader_version_range}" #mandatory
 
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
-# This project is a port of creeper-healing (https://github.com/ArkoSammy12/creeper-healing) and is therefore licensed under LGPL-3.0-only.
+# This project is a port of creeper-healing (https://github.com/ArkoSammy12/creeper-healing) and is therefore licensed under LGPL-2.1.
 license="${mod_license}"
 
 # A list of mods - how many allowed here is determined by the individual mod loader
@@ -27,7 +27,7 @@ displayName="${mod_name}" #mandatory
 logoFile="assets/creeperhealing/icon.png" #optional
 
 # A text field displayed in the mod UI
-credits="Port of creeper-healing by ArkoSammy12 (LGPL-3.0)" #optional
+credits="Port of creeper-healing by ArkoSammy12 (LGPL-2.1)" #optional
 
 # The authors of the mod, displayed in the mod UI (optional)
 authors="huntersxy"
@@ -37,7 +37,7 @@ description='''
 A server-side, customizable NeoForge mod that automatically and naturally heals Creeper explosions (and other types of explosions!).
 It supports configurable delays, special healing modes (daytime / difficulty-based / blast-resistance-based), item drop control,
 block NBT restoration, a block whitelist, a replace map, splash-potion speed-up, and in-game commands.
-Port of creeper-healing by ArkoSammy12 (LGPL-3.0).
+Port of creeper-healing by ArkoSammy12 (LGPL-2.1).
 '''
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.

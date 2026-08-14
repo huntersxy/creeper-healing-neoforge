@@ -27,4 +27,4 @@ Initial release — NeoForge 1.21.1 port of creeper-healing (by ArkoSammy12).
 ### Notes
 
 - Config file `config/creeper-healing.toml` keeps the original mod's layout.
-- Licensed under LGPL-3.0; this is an unofficial port of creeper-healing by ArkoSammy12.
+- Licensed under LGPL-2.1; this is an unofficial port of creeper-healing by ArkoSammy12.

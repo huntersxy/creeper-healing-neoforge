@@ -2,7 +2,7 @@
 
 一个服务端为主、高度可自定义的 **NeoForge** 模组，能让世界在苦力怕爆炸（以及其他类型的爆炸）后自动、自然地恢复地形。
 
-本模组是 [creeper-healing](https://github.com/ArkoSammy12/creeper-healing)（作者 **ArkoSammy12**，Fabric 版，LGPL-3.0）的 **NeoForge 1.21.1 移植版**。全部代码基于 NeoForge API 重写，保留原模组全部功能，并对 NeoForge 平台做了针对性优化。
+本模组是 [creeper-healing](https://github.com/ArkoSammy12/creeper-healing)（作者 **ArkoSammy12**，Fabric 版，LGPL-2.1）的 **NeoForge 1.21.1 移植版**。全部代码基于 NeoForge API 重写，保留原模组全部功能，并对 NeoForge 平台做了针对性优化。
 
 > ⚠️ 这是非官方移植。遇到问题请在本仓库反馈，不要打扰原项目。
 
@@ -120,6 +120,6 @@
 ## 许可证与致谢
 
 - 基于 **GNU Lesser General Public License v3.0** 发布，详见 [LICENSE](LICENSE)。
-- 本模组移植自 [creeper-healing](https://github.com/ArkoSammy12/creeper-healing)（作者 [ArkoSammy12](https://github.com/ArkoSammy12)，LGPL-3.0）。
+- 本模组移植自 [creeper-healing](https://github.com/ArkoSammy12/creeper-healing)（作者 [ArkoSammy12](https://github.com/ArkoSammy12)，LGPL-2.1）。
 - 模组图标来自 [Kioku](https://github.com/takoyakioku)（原模组致谢）。
 - 项目骨架基于 NeoForge MDK 模板（MIT）。

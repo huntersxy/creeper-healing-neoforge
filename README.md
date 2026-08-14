@@ -2,7 +2,7 @@
 
 A server-side, highly customizable **NeoForge** mod that automatically and naturally heals Creeper explosions — and other types of explosions — restoring the terrain of your world.
 
-This is a **NeoForge 1.21.1 port** of [creeper-healing](https://github.com/ArkoSammy12/creeper-healing) by **ArkoSammy12** (Fabric, LGPL-3.0). All code was rewritten for the NeoForge API; the original feature set is preserved and several parts were optimized for the NeoForge platform.
+This is a **NeoForge 1.21.1 port** of [creeper-healing](https://github.com/ArkoSammy12/creeper-healing) by **ArkoSammy12** (Fabric, LGPL-2.1). All code was rewritten for the NeoForge API; the original feature set is preserved and several parts were optimized for the NeoForge platform.
 
 > ⚠️ This is an unofficial port. If you run into problems, please report them here rather than on the original project's issue tracker.
 
@@ -120,6 +120,6 @@ The built jar is at `build/libs/creeperhealing-1.0.0.jar` (use the jar without `
 ## License & Credits
 
 - Licensed under the **GNU Lesser General Public License v3.0** — see [LICENSE](LICENSE).
-- This mod is a port of [creeper-healing](https://github.com/ArkoSammy12/creeper-healing) by [ArkoSammy12](https://github.com/ArkoSammy12) (LGPL-3.0).
+- This mod is a port of [creeper-healing](https://github.com/ArkoSammy12/creeper-healing) by [ArkoSammy12](https://github.com/ArkoSammy12) (LGPL-2.1).
 - Mod icon by [Kioku](https://github.com/takoyakioku) (as credited by the original mod).
 - The NeoForge MDK template (MIT) was used as the project skeleton.

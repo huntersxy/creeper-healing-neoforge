@@ -16,7 +16,7 @@ import org.slf4j.Logger;
  * Creeper Healing: a server-side mod that automatically and naturally heals explosions.
  *
  * <p>NeoForge port of creeper-healing by ArkoSammy12
- * (https://github.com/ArkoSammy12/creeper-healing), licensed under LGPL-3.0.
+ * (https://github.com/ArkoSammy12/creeper-healing), licensed under LGPL-2.1.
  */
 @Mod(CreeperHealing.MOD_ID)
 public class CreeperHealing {
