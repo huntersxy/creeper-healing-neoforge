@@ -2,7 +2,7 @@ package com.huntersxy.creeperhealing.blocks;
 
 import com.huntersxy.creeperhealing.config.CreeperHealingConfig;
 import com.huntersxy.creeperhealing.explosions.ExplosionEvent;
-import com.huntersxy.creeperhealing.mixin.FallingBlockMixin;
+import com.huntersxy.creeperhealing.util.FallingBlockSuppressor;
 import com.huntersxy.creeperhealing.util.ExplosionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -137,7 +137,7 @@ public class SingleAffectedBlock implements AffectedBlock {
         ExplosionUtils.pushEntitiesUpwards(level, pos, state, false);
         boolean makeFallingBlocksFall = CreeperHealingConfig.makeFallingBlocksFall();
         if (state.getBlock() instanceof FallingBlock && !makeFallingBlocksFall) {
-            FallingBlockMixin.suppressFall(level, pos);
+            FallingBlockSuppressor.suppressFall(level, pos);
         }
         level.setBlock(pos, state, 3);
         this.handleChestBlockIfNeeded(currentExplosionEvent, state, pos, level);

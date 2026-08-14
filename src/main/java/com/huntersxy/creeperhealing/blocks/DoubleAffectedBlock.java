@@ -2,7 +2,7 @@ package com.huntersxy.creeperhealing.blocks;
 
 import com.huntersxy.creeperhealing.config.CreeperHealingConfig;
 import com.huntersxy.creeperhealing.explosions.ExplosionEvent;
-import com.huntersxy.creeperhealing.mixin.FallingBlockMixin;
+import com.huntersxy.creeperhealing.util.FallingBlockSuppressor;
 import com.huntersxy.creeperhealing.util.ExplosionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -141,10 +141,10 @@ public class DoubleAffectedBlock extends SingleAffectedBlock {
         boolean makeFallingBlocksFall = CreeperHealingConfig.makeFallingBlocksFall();
         if (!makeFallingBlocksFall) {
             if (firstHalfState.getBlock() instanceof FallingBlock) {
-                FallingBlockMixin.suppressFall(level, firstHalfPos);
+                FallingBlockSuppressor.suppressFall(level, firstHalfPos);
             }
             if (secondHalfState.getBlock() instanceof FallingBlock) {
-                FallingBlockMixin.suppressFall(level, secondHalfPos);
+                FallingBlockSuppressor.suppressFall(level, secondHalfPos);
             }
         }
 

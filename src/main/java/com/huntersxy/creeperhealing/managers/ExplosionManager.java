@@ -11,7 +11,7 @@ import com.huntersxy.creeperhealing.explosions.DefaultExplosionEvent;
 import com.huntersxy.creeperhealing.explosions.DifficultyBasedExplosionEvent;
 import com.huntersxy.creeperhealing.explosions.ExplosionEvent;
 import com.huntersxy.creeperhealing.explosions.ExplosionHealingMode;
-import com.huntersxy.creeperhealing.mixin.FallingBlockMixin;
+import com.huntersxy.creeperhealing.util.FallingBlockSuppressor;
 import com.huntersxy.creeperhealing.util.ExplosionContext;
 import com.huntersxy.creeperhealing.util.ExplosionUtils;
 import net.minecraft.core.BlockPos;
@@ -61,7 +61,7 @@ public class ExplosionManager {
         if (this.explosionEvents.isEmpty()) {
             return;
         }
-        FallingBlockMixin.pruneSuppressions(this.level);
+        FallingBlockSuppressor.pruneSuppressions(this.level);
         for (ExplosionEvent explosionEvent : this.explosionEvents) {
             explosionEvent.tick(this.level);
         }
