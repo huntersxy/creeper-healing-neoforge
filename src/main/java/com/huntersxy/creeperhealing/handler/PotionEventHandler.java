@@ -6,7 +6,9 @@ import com.huntersxy.creeperhealing.managers.ExplosionManagerRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -15,7 +17,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.entity.PotionEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 
 /**
  * Makes explosions heal faster when a splash potion of Healing or Regeneration is thrown on them.
@@ -23,8 +25,11 @@ import net.neoforged.neoforge.event.entity.PotionEvent;
 public class PotionEventHandler {
 
     @SubscribeEvent
-    public void onPotionSplash(PotionEvent.PotionSplashEvent event) {
-        ThrownPotion potion = event.getEntity();
+    public void onProjectileImpact(ProjectileImpactEvent event) {
+        Projectile projectile = event.getProjectile();
+        if (!(projectile instanceof ThrownPotion potion)) {
+            return;
+        }
         if (!potion.getItem().is(Items.SPLASH_POTION)) {
             return;
         }
@@ -32,7 +37,7 @@ public class PotionEventHandler {
         if (level.isClientSide() || !(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        HitResult hitResult = event.getHitResult();
+        HitResult hitResult = event.getRayTraceResult();
         if (hitResult == null) {
             return;
         }
@@ -45,22 +50,26 @@ public class PotionEventHandler {
             return;
         }
         PotionContents potionContents = potion.getItem().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-        boolean hasInstantHealth = potionContents.getEffects().stream()
-                .anyMatch(instance -> instance.getEffect().is(MobEffects.HEALING));
-        boolean hasRegeneration = potionContents.getEffects().stream()
-                .anyMatch(instance -> instance.getEffect().is(MobEffects.REGENERATION));
+        boolean hasInstantHealth = false;
+        boolean hasRegeneration = false;
+        for (MobEffectInstance effectInstance : potionContents.getAllEffects()) {
+            if (effectInstance.getEffect().is(MobEffects.HEAL)) {
+                hasInstantHealth = true;
+            }
+            if (effectInstance.getEffect().is(MobEffects.REGENERATION)) {
+                hasRegeneration = true;
+            }
+        }
         boolean healOnHealingPotion = CreeperHealingConfig.healOnHealingPotionSplash();
         boolean healOnRegenerationPotion = CreeperHealingConfig.healOnRegenerationPotionSplash();
+        ExplosionManager manager = ExplosionManagerRegistry.get(serverLevel);
+        if (manager == null) {
+            return;
+        }
         if (hasInstantHealth && healOnHealingPotion) {
-            ExplosionManager manager = ExplosionManagerRegistry.get(serverLevel);
-            if (manager != null) {
-                manager.onPotionSplash(potionHitPosition, true, false);
-            }
+            manager.onPotionSplash(potionHitPosition, true, false);
         } else if (hasRegeneration && healOnRegenerationPotion) {
-            ExplosionManager manager = ExplosionManagerRegistry.get(serverLevel);
-            if (manager != null) {
-                manager.onPotionSplash(potionHitPosition, false, true);
-            }
+            manager.onPotionSplash(potionHitPosition, false, true);
         }
     }
 }

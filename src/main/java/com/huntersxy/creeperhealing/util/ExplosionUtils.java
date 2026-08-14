@@ -91,7 +91,7 @@ public final class ExplosionUtils {
         int centerZ = getCenterZCoordinate(affectedBlocksAsPositions);
         Comparator<AffectedBlock> comparator = Comparator
                 // Transparent blocks last (opaque blocks first)
-                .comparingInt((AffectedBlock affectedBlock) -> affectedBlock.getBlockState().isTransparent() ? 1 : 0)
+                .comparingInt((AffectedBlock affectedBlock) -> affectedBlock.getBlockState().canOcclude() ? 0 : 1)
                 // Bottom blocks first
                 .thenComparingInt(affectedBlock -> affectedBlock.getBlockPos().getY())
                 // Farthest from the center first

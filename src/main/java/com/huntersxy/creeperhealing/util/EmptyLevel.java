@@ -3,22 +3,27 @@ package com.huntersxy.creeperhealing.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.border.WorldBorder;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.minecraft.world.level.chunk.EmptyLevelChunk;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.level.lighting.LevelLightEngine;
-import net.minecraft.world.level.border.WorldBorder;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -36,14 +41,16 @@ public class EmptyLevel implements LevelReader {
         this.level = level;
     }
 
+    @Nullable
     @Override
-    public int getHeight() {
-        return this.level.getHeight();
+    public ChunkAccess getChunk(int chunkX, int chunkZ, ChunkStatus leastStatus, boolean create) {
+        return new EmptyLevelChunk(this.level, new ChunkPos(chunkX, chunkZ),
+                this.level.getBiome(new BlockPos(chunkX * 16, 0, chunkZ * 16)));
     }
 
     @Override
-    public int getMinBuildHeight() {
-        return this.level.getMinBuildHeight();
+    public boolean hasChunk(int chunkX, int chunkZ) {
+        return false;
     }
 
     @Override
@@ -62,8 +69,8 @@ public class EmptyLevel implements LevelReader {
     }
 
     @Override
-    public Holder<Biome> getBiome(BlockPos pos) {
-        return this.level.getBiome(pos);
+    public Holder<Biome> getUncachedNoiseBiome(int x, int y, int z) {
+        return this.level.getUncachedNoiseBiome(x, y, z);
     }
 
     @Override
@@ -84,6 +91,11 @@ public class EmptyLevel implements LevelReader {
     @Override
     public RegistryAccess registryAccess() {
         return this.level.registryAccess();
+    }
+
+    @Override
+    public FeatureFlagSet enabledFeatures() {
+        return this.level.enabledFeatures();
     }
 
     @Override

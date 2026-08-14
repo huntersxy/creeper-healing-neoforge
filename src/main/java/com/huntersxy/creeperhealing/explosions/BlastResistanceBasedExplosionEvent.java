@@ -25,7 +25,7 @@ public class BlastResistanceBasedExplosionEvent extends AbstractExplosionEvent {
     }
 
     @Override
-    protected ExplosionHealingMode getHealingMode() {
+    public ExplosionHealingMode getHealingMode() {
         return ExplosionHealingMode.BLAST_RESISTANCE_BASED_HEALING_MODE;
     }
 
@@ -36,7 +36,7 @@ public class BlastResistanceBasedExplosionEvent extends AbstractExplosionEvent {
             if (!(affectedBlock instanceof SingleAffectedBlock singleAffectedBlock)) {
                 continue;
             }
-            double randomOffset = random.nextBetween(-2, 2);
+            int randomOffset = random.nextIntBetweenInclusive(-2, 2);
             float blastResistance = singleAffectedBlock.getBlockState().getBlock().getExplosionResistance();
             double blastResistanceMultiplier = Math.min(blastResistance, 9);
             int offset = (int) (Mth.lerp(blastResistanceMultiplier / 9, -2, 2) + randomOffset);

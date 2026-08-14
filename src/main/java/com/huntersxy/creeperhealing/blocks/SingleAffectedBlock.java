@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -144,7 +143,7 @@ public class SingleAffectedBlock implements AffectedBlock {
         this.handleChestBlockIfNeeded(currentExplosionEvent, state, pos, level);
         boolean healNbt = this.nbt != null && !stateReplaced;
         if (healNbt) {
-            BlockEntity blockEntity = BlockEntityType.create(pos, state, this.nbt, level.registryAccess());
+            BlockEntity blockEntity = BlockEntity.loadStatic(pos, state, this.nbt, level.registryAccess());
             if (blockEntity != null) {
                 level.setBlockEntity(blockEntity);
             }

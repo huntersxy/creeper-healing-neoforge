@@ -15,7 +15,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -154,14 +153,14 @@ public class DoubleAffectedBlock extends SingleAffectedBlock {
 
         boolean healFirstHalfNbt = this.getNbt() != null && !stateReplaced;
         if (healFirstHalfNbt) {
-            BlockEntity blockEntity = BlockEntityType.create(firstHalfPos, firstHalfState, this.getNbt(), level.registryAccess());
+            BlockEntity blockEntity = BlockEntity.loadStatic(firstHalfPos, firstHalfState, this.getNbt(), level.registryAccess());
             if (blockEntity != null) {
                 level.setBlockEntity(blockEntity);
             }
         }
         boolean healSecondHalfNbt = this.secondHalfNbt != null && !stateReplaced;
         if (healSecondHalfNbt) {
-            BlockEntity blockEntity = BlockEntityType.create(secondHalfPos, secondHalfState, this.secondHalfNbt, level.registryAccess());
+            BlockEntity blockEntity = BlockEntity.loadStatic(secondHalfPos, secondHalfState, this.secondHalfNbt, level.registryAccess());
             if (blockEntity != null) {
                 level.setBlockEntity(blockEntity);
             }

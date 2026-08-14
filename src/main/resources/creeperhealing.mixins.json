@@ -3,6 +3,7 @@
   "package": "com.huntersxy.creeperhealing.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ExplosionDropsMixin",
     "FallingBlockMixin"
   ],
   "injectors": {

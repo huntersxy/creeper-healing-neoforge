@@ -65,7 +65,7 @@ public abstract class FallingBlockMixin {
         }
     }
 
-    @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/FallingBlock;canFallThrough(Lnet/minecraft/world/level/block/state/BlockState;)Z"))
+    @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/FallingBlock;isFree(Lnet/minecraft/world/level/block/state/BlockState;)Z"))
     private boolean creeperhealing$preventScheduledFall(boolean original,
                                                         @Local(argsOnly = true) ServerLevel level,
                                                         @Local(argsOnly = true) BlockPos pos) {

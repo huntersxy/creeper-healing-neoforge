@@ -24,7 +24,7 @@ public class DifficultyBasedExplosionEvent extends AbstractExplosionEvent {
     }
 
     @Override
-    protected ExplosionHealingMode getHealingMode() {
+    public ExplosionHealingMode getHealingMode() {
         return ExplosionHealingMode.DIFFICULTY_BASED_HEALING_MODE;
     }
 

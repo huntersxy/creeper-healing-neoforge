@@ -26,7 +26,7 @@ public class DaytimeExplosionEvent extends AbstractExplosionEvent {
     }
 
     @Override
-    protected ExplosionHealingMode getHealingMode() {
+    public ExplosionHealingMode getHealingMode() {
         return ExplosionHealingMode.DAYTIME_HEALING_MODE;
     }
 

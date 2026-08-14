@@ -67,7 +67,8 @@ public interface AffectedBlock {
     @Nullable
     static AffectedBlock load(CompoundTag tag, HolderLookup.Provider registries) {
         boolean isDouble = "double".equals(tag.getString("type"));
-        BlockPos pos = new BlockPos(tag.getIntArray("pos"));
+        int[] posArr = tag.getIntArray("pos");
+        BlockPos pos = new BlockPos(posArr[0], posArr[1], posArr[2]);
         BlockState state = BlockState.CODEC.decode(registries.createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE), tag.get("state"))
                 .result().map(pair -> pair.getFirst()).orElse(null);
         if (state == null) {
@@ -79,7 +80,11 @@ public interface AffectedBlock {
         if (!isDouble) {
             return new SingleAffectedBlock(pos, state, nbt, timer, placed);
         }
-        BlockPos secondHalfPos = tag.contains("second_half_pos") ? new BlockPos(tag.getIntArray("second_half_pos")) : null;
+        BlockPos secondHalfPos = null;
+        if (tag.contains("second_half_pos")) {
+            int[] halfArr = tag.getIntArray("second_half_pos");
+            secondHalfPos = new BlockPos(halfArr[0], halfArr[1], halfArr[2]);
+        }
         BlockState secondHalfState = null;
         if (tag.contains("second_half_state")) {
             secondHalfState = BlockState.CODEC.decode(registries.createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE), tag.get("second_half_state"))

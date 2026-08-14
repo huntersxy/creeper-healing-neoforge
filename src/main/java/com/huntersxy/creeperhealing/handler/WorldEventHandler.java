@@ -24,7 +24,8 @@ public class WorldEventHandler {
         ExplosionManagerRegistry.register(serverLevel, manager);
         SavedData.Factory<ExplosionHealingData> factory = new SavedData.Factory<>(
                 () -> ExplosionHealingData.create(manager),
-                tag -> ExplosionHealingData.load(tag, serverLevel, manager));
+                (tag, provider) -> ExplosionHealingData.load(tag, serverLevel, manager),
+                net.minecraft.util.datafix.DataFixTypes.SAVED_DATA_MAP_DATA);
         ExplosionHealingData data = serverLevel.getDataStorage().computeIfAbsent(factory, ExplosionHealingData.DATA_KEY);
         manager.setDirtyCallback(data::setDirty);
         manager.updateAffectedBlocksTimers();

@@ -90,7 +90,7 @@ public abstract class AbstractExplosionEvent implements ExplosionEvent {
     }
 
     @Override
-    public final void tick(ServerLevel level) {
+    public void tick(ServerLevel level) {
         if (this.isFinished()) {
             return;
         }

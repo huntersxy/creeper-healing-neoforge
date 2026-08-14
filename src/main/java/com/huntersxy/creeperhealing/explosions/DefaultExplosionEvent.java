@@ -20,7 +20,7 @@ public class DefaultExplosionEvent extends AbstractExplosionEvent {
     }
 
     @Override
-    protected ExplosionHealingMode getHealingMode() {
+    public ExplosionHealingMode getHealingMode() {
         return ExplosionHealingMode.DEFAULT_MODE;
     }
 
