@@ -51,7 +51,7 @@ config="${mod_id}.mixins.json"
     # The type of the dependency. Can be one of "required", "optional", "incompatible" or "discouraged" (case insensitive).
     type="required" #mandatory
     # The version range of the dependency
-    versionRange="[${neo_version},)" #mandatory
+    versionRange="${neo_version_range}" #mandatory
     # An ordering relationship for the dependency.
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT, or SERVER
