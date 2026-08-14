@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -183,65 +184,44 @@ public final class CreeperHealingConfig {
 
     private static String buildFileContents() {
         StringBuilder sb = new StringBuilder();
-        sb.append("# Creeper Healing configuration file.
-");
-        sb.append("# All settings can also be changed in-game via /creeper-healing commands.
-");
-        sb.append("# Use /creeper-healing reload_config to re-read this file while the game is running.
+        sb.append("# Creeper Healing configuration file.\n");
+        sb.append("# All settings can also be changed in-game via /creeper-healing commands.\n");
+        sb.append("# Use /creeper-healing reload_config to re-read this file while the game is running.\n\n");
 
-");
-
-        sb.append("# Configure the delays related to the healing of explosions.
-");
-        sb.append("[delays]
-");
+        sb.append("# Configure the delays related to the healing of explosions.\n");
+        sb.append("[delays]\n");
         appendDouble(sb, EXPLOSION_HEAL_DELAY, DEFAULT_EXPLOSION_HEAL_DELAY, "How much time in seconds should an explosion wait for to begin healing.");
         appendDouble(sb, BLOCK_PLACEMENT_DELAY, DEFAULT_BLOCK_PLACEMENT_DELAY, "The time in seconds that a block takes to heal.");
-        sb.append('
-');
+        sb.append("\n");
 
-        sb.append("# Toggle whether certain explosions should drop items. Does not include items stored in container blocks.
-");
-        sb.append("[explosion_item_drops]
-");
+        sb.append("# Toggle whether certain explosions should drop items. Does not include items stored in container blocks.\n");
+        sb.append("[explosion_item_drops]\n");
         appendBool(sb, DROP_ITEMS_ON_MOB_EXPLOSIONS, "Whether to drop items on explosions caused by mobs such as Creepers.");
         appendBool(sb, DROP_ITEMS_ON_BLOCK_EXPLOSIONS, "Whether to drop items on explosions caused by blocks such as beds or end crystal blocks.");
         appendBool(sb, DROP_ITEMS_ON_TNT_EXPLOSIONS, "Whether to drop items on explosions caused by TNT blocks and TNT minecarts.");
         appendBool(sb, DROP_ITEMS_ON_TRIGGERED_EXPLOSIONS, "Whether to drop items on explosions such as those caused by wind bursts.");
         appendBool(sb, DROP_ITEMS_ON_OTHER_EXPLOSIONS, "Whether to drop items on explosions whose source is not any of the ones provided in this setting category.");
         appendList(sb, DROP_ITEMS_ON_MOB_EXPLOSIONS_BLACKLIST, "Add mob identifiers to this blacklist to prevent explosions caused by the added mobs from dropping items if drop_items_on_mob_explosions is enabled.");
-        sb.append('
-');
+        sb.append("\n");
 
-        sb.append("# Configure which explosions are allowed to heal.
-");
-        sb.append("[explosion_sources]
-");
+        sb.append("# Configure which explosions are allowed to heal.\n");
+        sb.append("[explosion_sources]\n");
         appendBool(sb, HEAL_MOB_EXPLOSIONS, "Heal explosions caused by mobs such as Creepers.");
         appendBool(sb, HEAL_BLOCK_EXPLOSIONS, "Heal explosions caused by blocks such as beds or end crystal blocks.");
         appendBool(sb, HEAL_TNT_EXPLOSIONS, "Heal explosions caused by TNT blocks and TNT minecarts.");
         appendBool(sb, HEAL_TRIGGERED_EXPLOSIONS, "Heal explosions such as those caused by wind bursts.");
         appendBool(sb, HEAL_OTHER_EXPLOSIONS, "Heal explosions caused by sources which aren't any of the ones provided in this setting category.");
         appendList(sb, HEAL_MOB_EXPLOSIONS_BLACKLIST, "Add mob identifiers to this blacklist to prevent explosions caused by the added mobs from healing if heal_mob_explosions is enabled.");
-        sb.append('
-');
+        sb.append("\n");
 
-        sb.append("# Choose between different special modes for explosion healing. Note that certain healing modes will not follow the explosion delay and block delay settings.
-");
-        sb.append("[explosion_healing_mode]
-");
-        sb.append("	# Choose any of the following healing modes by copying one of the strings and pasting it into the value of the \"mode\" setting below:
-");
-        sb.append("	#\"default_mode\", \"daytime_healing_mode\", \"difficulty_based_healing_mode\", \"blast_resistance_based_healing_mode\"
-");
-        sb.append("	mode = \"").append(getMode().getName()).append("\"
+        sb.append("# Choose between different special modes for explosion healing. Note that certain healing modes will not follow the explosion delay and block delay settings.\n");
+        sb.append("[explosion_healing_mode]\n");
+        sb.append("\t# Choose any of the following healing modes by copying one of the strings and pasting it into the value of the \"mode\" setting below:\n");
+        sb.append("\t#\"default_mode\", \"daytime_healing_mode\", \"difficulty_based_healing_mode\", \"blast_resistance_based_healing_mode\"\n");
+        sb.append("\tmode = \"").append(getMode().getName()).append("\"\n\n");
 
-");
-
-        sb.append("# Toggleable settings for extra features.
-");
-        sb.append("[preferences]
-");
+        sb.append("# Toggleable settings for extra features.\n");
+        sb.append("[preferences]\n");
         appendBool(sb, RESTORE_BLOCK_NBT, "Whether to restore block nbt data upon healing. This option prevents container blocks like chests from dropping their inventories. Does not apply when the healed block is different from the destroyed block due to a replace map entry.");
         appendBool(sb, FORCE_BLOCKS_WITH_NBT_TO_ALWAYS_HEAL, "Whether to force blocks with nbt data to always heal, even if the replace map specifies a replacement for that block, and regardless of the block that may be occupying that position at the moment of healing.");
         appendBool(sb, MAKE_FALLING_BLOCKS_FALL, "Allows for a falling block, like sand or gravel, to fall when healed. Disabling this option makes the falling block have to receive a neighbor update before falling.");
@@ -250,67 +230,47 @@ public final class CreeperHealingConfig {
         appendBool(sb, HEAL_ON_HEALING_POTION_SPLASH, "Makes explosion heal immediately when a potion of Healing is thrown on them.");
         appendBool(sb, HEAL_ON_REGENERATION_POTION_SPLASH, "Makes explosions begin their healing process when a potion of Regeneration is thrown on them.");
         appendBool(sb, ENABLE_WHITELIST, "Toggle the usage of the whitelist.");
-        sb.append('
-');
+        sb.append("\n");
 
-        sb.append("# Use an optional whitelist to customize which blocks are allowed to heal. To add an entry, specify the block's namespace
-");
-        sb.append("# along with its identifier, separated by a colon and enclosed in double quotes, and add it in-between the square brackets below. Separate each entry with a comma.
-");
-        sb.append("#Example entries:
-");
-        sb.append("#whitelist = [\"minecraft:grass\", \"minecraft:stone\", \"minecraft:sand\"]
-");
-        sb.append("[whitelist]
-");
+        sb.append("# Use an optional whitelist to customize which blocks are allowed to heal. To add an entry, specify the block's namespace\n");
+        sb.append("# along with its identifier, separated by a colon and enclosed in double quotes, and add it in-between the square brackets below. Separate each entry with a comma.\n");
+        sb.append("#Example entries:\n");
+        sb.append("#whitelist = [\"minecraft:grass\", \"minecraft:stone\", \"minecraft:sand\"]\n");
+        sb.append("[whitelist]\n");
         appendList(sb, WHITELIST, null);
-        sb.append('
-');
+        sb.append("\n");
 
-        sb.append("# Add your own replace entries to configure which blocks should be used to heal other blocks. The block on the right will be used to heal the block on the left.
-");
-        sb.append("#Specify the block's namespace along with the block's name identifier, separated by a colon and enclosed in double quotes.
-");
-        sb.append("#Example entry:
-");
-        sb.append("#\"minecraft:gold_block\" = \"minecraft:stone\"
-");
-        sb.append("#Warning, the same key cannot appear more than once in the replace map!
-");
-        sb.append("[replace_map]
-");
+        sb.append("# Add your own replace entries to configure which blocks should be used to heal other blocks. The block on the right will be used to heal the block on the left.\n");
+        sb.append("#Specify the block's namespace along with the block's name identifier, separated by a colon and enclosed in double quotes.\n");
+        sb.append("#Example entry:\n");
+        sb.append("#\"minecraft:gold_block\" = \"minecraft:stone\"\n");
+        sb.append("#Warning, the same key cannot appear more than once in the replace map!\n");
+        sb.append("[replace_map]\n");
         if (replaceMap.isEmpty()) {
-            sb.append("	# (empty)
-");
+            sb.append("\t# (empty)\n");
         } else {
             for (Map.Entry<String, String> entry : replaceMap.entrySet()) {
-                sb.append("	\"").append(entry.getKey()).append("\" = \"").append(entry.getValue()).append("\"
-");
+                sb.append("\t\"").append(entry.getKey()).append("\" = \"").append(entry.getValue()).append("\"\n");
             }
         }
         return sb.toString();
     }
 
     private static void appendDouble(StringBuilder sb, String key, double defaultValue, String comment) {
-        sb.append("	#(Default = ").append(String.format(java.util.Locale.ROOT, "%.1f", defaultValue)).append(") ").append(comment).append('
-');
-        sb.append("	").append(key.substring(key.indexOf('.') + 1)).append(" = ").append(getDouble(key)).append('
-');
+        sb.append("\t#(Default = ").append(String.format(Locale.ROOT, "%.1f", defaultValue)).append(") ").append(comment).append("\n");
+        sb.append("\t").append(key.substring(key.indexOf('.') + 1)).append(" = ").append(getDouble(key)).append("\n");
     }
 
     private static void appendBool(StringBuilder sb, String key, String comment) {
-        sb.append("	#(Default = ").append(DEFAULTS.get(key)).append(") ").append(comment).append('
-');
-        sb.append("	").append(key.substring(key.indexOf('.') + 1)).append(" = ").append(getBoolean(key)).append('
-');
+        sb.append("\t#(Default = ").append(DEFAULTS.get(key)).append(") ").append(comment).append("\n");
+        sb.append("\t").append(key.substring(key.indexOf('.') + 1)).append(" = ").append(getBoolean(key)).append("\n");
     }
 
     private static void appendList(StringBuilder sb, String key, String comment) {
         if (comment != null) {
-            sb.append("	#").append(comment).append('
-');
+            sb.append("\t#").append(comment).append("\n");
         }
-        sb.append("	").append(key.substring(key.indexOf('.') + 1)).append(" = [");
+        sb.append("\t").append(key.substring(key.indexOf('.') + 1)).append(" = [");
         List<String> entries = getStringList(key);
         for (int i = 0; i < entries.size(); i++) {
             if (i > 0) {
@@ -318,8 +278,7 @@ public final class CreeperHealingConfig {
             }
             sb.append('"').append(entries.get(i)).append('"');
         }
-        sb.append("]
-");
+        sb.append("]\n");
     }
 
     // ---- Raw accessors ----
@@ -374,7 +333,7 @@ public final class CreeperHealingConfig {
     }
 
     public static void setDouble(String key, double value) {
-        values.put(key, String.format(java.util.Locale.ROOT, "%.2f", value));
+        values.put(key, String.format(Locale.ROOT, "%.2f", value));
         save();
     }
 
@@ -433,7 +392,7 @@ public final class CreeperHealingConfig {
     }
 
     private static String unquote(String value) {
-        if (value.length() >= 2 && value.startsWith(""") && value.endsWith(""")) {
+        if (value.length() >= 2 && value.startsWith("\"") && value.endsWith("\"")) {
             return value.substring(1, value.length() - 1);
         }
         return value;

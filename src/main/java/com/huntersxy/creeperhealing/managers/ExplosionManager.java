@@ -31,9 +31,22 @@ public class ExplosionManager {
 
     private final ServerLevel level;
     private final List<ExplosionEvent> explosionEvents = new ArrayList<>();
+    @Nullable
+    private Runnable dirtyCallback;
 
     public ExplosionManager(ServerLevel level) {
         this.level = level;
+    }
+
+    /** Wired to the per-level {@link com.huntersxy.creeperhealing.data.ExplosionHealingData} so changes get persisted. */
+    public void setDirtyCallback(Runnable dirtyCallback) {
+        this.dirtyCallback = dirtyCallback;
+    }
+
+    private void markDirty() {
+        if (this.dirtyCallback != null) {
+            this.dirtyCallback.run();
+        }
     }
 
     public ServerLevel getLevel() {
@@ -52,7 +65,9 @@ public class ExplosionManager {
         for (ExplosionEvent explosionEvent : this.explosionEvents) {
             explosionEvent.tick(this.level);
         }
-        this.explosionEvents.removeIf(ExplosionEvent::isFinished);
+        if (this.explosionEvents.removeIf(ExplosionEvent::isFinished)) {
+            this.markDirty();
+        }
     }
 
     /**
@@ -67,6 +82,7 @@ public class ExplosionManager {
         if (explosionEvent == null) {
             return;
         }
+        this.markDirty();
         Set<ExplosionEvent> collidingExplosions = this.getCollidingExplosions(explosionEvent, context.affectedPositions());
         if (collidingExplosions.isEmpty()) {
             this.explosionEvents.add(explosionEvent);

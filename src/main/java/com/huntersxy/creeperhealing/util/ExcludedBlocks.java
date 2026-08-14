@@ -1,6 +1,7 @@
 package com.huntersxy.creeperhealing.util;
 
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,17 +21,18 @@ public enum ExcludedBlocks {
     END_GATEWAY(Blocks.END_GATEWAY, BlockTags.PORTALS);
 
     private final Block blockInstance;
+    private final TagKey<Block> blockTag;
 
-    ExcludedBlocks(Block blockInstance, net.minecraft.tags.TagKey<Block> blockTag) {
+    ExcludedBlocks(Block blockInstance, TagKey<Block> blockTag) {
         this.blockInstance = blockInstance;
+        this.blockTag = blockTag;
     }
 
     public static boolean isExcluded(@Nullable Block block) {
         if (block == null) {
             return false;
         }
-        return Arrays.stream(ExcludedBlocks.values()).anyMatch(excludedBlock ->
-                block.defaultBlockState().is(excludedBlock.blockInstance));
+        return isExcluded(block.defaultBlockState());
     }
 
     public static boolean isExcluded(@Nullable BlockState state) {
@@ -38,6 +40,6 @@ public enum ExcludedBlocks {
             return false;
         }
         return Arrays.stream(ExcludedBlocks.values()).anyMatch(excludedBlock ->
-                state.is(excludedBlock.blockInstance));
+                state.is(excludedBlock.blockInstance) || state.is(excludedBlock.blockTag));
     }
 }

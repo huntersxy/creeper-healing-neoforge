@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.FallingBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -67,7 +66,7 @@ public abstract class FallingBlockMixin {
     }
 
     @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/FallingBlock;canFallThrough(Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    private boolean creeperhealing$preventScheduledFall(boolean original, BlockState state,
+    private boolean creeperhealing$preventScheduledFall(boolean original,
                                                         @Local(argsOnly = true) ServerLevel level,
                                                         @Local(argsOnly = true) BlockPos pos) {
         if (consumeSuppression(level, pos)) {
