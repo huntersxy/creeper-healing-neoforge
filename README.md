@@ -1,101 +1,125 @@
-# Creeper Healing (NeoForge)
+# Creeper Healing
 
-一个服务端为主、可高度自定义的 NeoForge 模组，能让世界在苦力怕爆炸（以及其他类型的爆炸）后自动、自然地恢复地形。
+A server-side, highly customizable **NeoForge** mod that automatically and naturally heals Creeper explosions — and other types of explosions — restoring the terrain of your world.
 
-本模组是 [creeper-healing](https://github.com/ArkoSammy12/creeper-healing)（作者 ArkoSammy12，Fabric 版，LGPL-3.0）的 **NeoForge 1.21.1 移植版**，作者为 huntersxy。
+This is a **NeoForge 1.21.1 port** of [creeper-healing](https://github.com/ArkoSammy12/creeper-healing) by **ArkoSammy12** (Fabric, LGPL-3.0). All code was rewritten for the NeoForge API; the original feature set is preserved and several parts were optimized for the NeoForge platform.
 
-## 功能
+> ⚠️ This is an unofficial port. If you run into problems, please report them here rather than on the original project's issue tracker.
 
-### 爆炸恢复模式
+## Requirements
 
-- **默认模式**：爆炸后等待配置的延迟，然后逐个恢复方块。
-- **白天恢复模式**：爆炸会等到日出才开始恢复；恢复过程中需要光照。方块会在一天内分批恢复。
-- **难度恢复模式**：根据世界难度加快或减慢恢复速度。
-- **抗爆性恢复模式**：抗爆性越高的方块恢复越慢，并带有随机偏移，方块会成批恢复。
+| | |
+|---|---|
+| Minecraft | 1.21.1 |
+| NeoForge | **21.1.x** (any minor version, e.g. 21.1.0 – 21.1.244) |
+| Java | 21 |
 
-方块恢复的位置必须是玩家也能放置方块的位置。
+## Features
 
-### 不同爆炸来源
+### Healing modes
 
-支持恢复多种来源的爆炸：生物（苦力怕、恶魂等）、TNT、床/末地水晶等方块、风弹等触发型爆炸，以及其他来源。可以为生物来源配置黑名单。
+- **Default mode**: waits for the configured delay, then heals the destroyed blocks one by one.
+- **Daytime healing mode**: explosions wait until sunrise to begin healing, and only heal while and where there is light.
+- **Difficulty-based healing mode**: healing is sped up or slowed down depending on the world difficulty.
+- **Blast-resistance-based healing mode**: blocks with higher blast resistance take longer to heal, with a randomized offset so blocks heal in bursts.
 
-### 控制爆炸掉落物
+A block is only healed where a player would be able to place it.
 
-可以单独配置不同来源的爆炸是否掉落物品。默认所有非生物爆炸**不**掉落物品（与 Fabric 原版一致），也可以逐项修改。另有生物掉落黑名单。
+### Explosion sources
 
-### 可配置延迟
+Mob explosions (Creepers, Ghasts, …), block explosions (beds, respawn anchors, end crystals), TNT (blocks and minecarts), triggered explosions (wind charges) and other sources can each be enabled or disabled independently, with a blacklist for mob sources.
 
-- 爆炸开始恢复的等待时间
-- 每个方块恢复的间隔时间
+### Item drop control
 
-> 注意：两个延迟最小值均为 0.05 秒。
+Configure per source type whether explosions drop items. Container contents can also be kept (and restored together with the block's NBT data) via `restore_block_nbt`.
 
-### 恢复方块实体 NBT
+### More
 
-可开关方块 NBT 数据的恢复（关闭后容器内的物品会正常掉落）。也可以强制带 NBT 的方块必须恢复，保证原方块及其数据被还原。
+- Configurable explosion heal delay and per-block placement delay (minimum 0.05 s).
+- Restore block-entity NBT data; optionally force blocks with NBT to always heal.
+- Make healed falling blocks (sand, gravel, …) stay in place until a neighbor update.
+- Optional block whitelist.
+- Replace map: heal certain blocks as other blocks (e.g. diamond blocks as stone), preserving block properties.
+- Block placement sound effect and cloud particles.
+- Splash potions of **Healing** heal explosions instantly; **Regeneration** potions start them early.
+- Fully configurable in-game via commands; config file hot-reload.
+- Scheduled healings survive server restarts (saved per dimension).
 
-### 掉落方块不落下
+## Installation
 
-可以让沙子、沙砾等方块被恢复后停留在原位，只有收到方块更新时才会下落。
+1. Install [NeoForge for Minecraft 1.21.1](https://neoforged.net/) and run it once.
+2. Put `creeperhealing-1.0.0.jar` into the `mods/` folder of your client or server.
+3. Start the game. The configuration file `config/creeper-healing.toml` is generated on first launch.
 
-### 白名单
+## Configuration
 
-可选地启用白名单，只恢复白名单中的方块：
+All settings live in `config/creeper-healing.toml` (same layout as the original mod, so existing configs can be carried over). Edit the file and run `/creeper-healing reload_config`, or change settings in-game with commands.
 
-```toml
-[whitelist]
-	whitelist = ["minecraft:grass", "minecraft:stone", "minecraft:sand"]
+| Section | Setting | Default | Description |
+|---|---|---|---|
+| `[delays]` | `explosion_heal_delay` | `3.0` | Seconds an explosion waits before healing starts. |
+| `[delays]` | `block_placement_delay` | `1.0` | Seconds between each healed block. |
+| `[explosion_item_drops]` | `drop_items_on_mob_explosions` | `false` | Drop items from mob explosions. |
+| `[explosion_item_drops]` | `drop_items_on_block_explosions` | `true` | Drop items from bed / end crystal explosions. |
+| `[explosion_item_drops]` | `drop_items_on_tnt_explosions` | `true` | Drop items from TNT explosions. |
+| `[explosion_item_drops]` | `drop_items_on_triggered_explosions` | `true` | Drop items from wind-charge explosions. |
+| `[explosion_item_drops]` | `drop_items_on_other_explosions` | `true` | Drop items from other explosion sources. |
+| `[explosion_item_drops]` | `drop_items_on_mob_explosions_blacklist` | `["minecraft:placeholder"]` | Mob ids that never drop items. |
+| `[explosion_sources]` | `heal_mob_explosions` | `true` | Heal mob explosions. |
+| `[explosion_sources]` | `heal_block_explosions` | `false` | Heal bed / end crystal explosions. |
+| `[explosion_sources]` | `heal_tnt_explosions` | `false` | Heal TNT explosions. |
+| `[explosion_sources]` | `heal_triggered_explosions` | `false` | Heal wind-charge explosions. |
+| `[explosion_sources]` | `heal_other_explosions` | `false` | Heal other explosion sources. |
+| `[explosion_sources]` | `heal_mob_explosions_blacklist` | `["minecraft:placeholder"]` | Mob ids whose explosions are never healed. |
+| `[explosion_healing_mode]` | `mode` | `"default_mode"` | `default_mode`, `daytime_healing_mode`, `difficulty_based_healing_mode`, `blast_resistance_based_healing_mode`. |
+| `[preferences]` | `restore_block_nbt` | `false` | Restore block-entity NBT when healing. |
+| `[preferences]` | `force_blocks_with_nbt_to_always_heal` | `false` | Always heal blocks that carry NBT data. |
+| `[preferences]` | `make_falling_blocks_fall` | `true` | Let healed sand/gravel fall; if `false`, they stay until a neighbor update. |
+| `[preferences]` | `block_placement_sound_effect` | `true` | Play a placement sound when healing. |
+| `[preferences]` | `block_placement_particles` | `true` | Spawn cloud particles when healing. |
+| `[preferences]` | `heal_on_healing_potion_splash` | `true` | Healing potions finish healing instantly. |
+| `[preferences]` | `heal_on_regeneration_potion_splash` | `true` | Regeneration potions start healing early. |
+| `[preferences]` | `enable_whitelist` | `false` | Only heal whitelisted blocks. |
+| `[whitelist]` | `whitelist` | `["minecraft:placeholder"]` | Block ids allowed to heal. |
+| `[replace_map]` | `"old_block" = "new_block"` | `"minecraft:diamond_block" = "minecraft:stone"` | Heal `old_block` as `new_block`. |
+
+> The same replace-map key must not appear twice, otherwise the mod will refuse to load the configuration.
+
+## Commands
+
+All commands require operator permission. Query a value by running the command without arguments.
+
+```
+/creeper-healing reload_config
+/creeper-healing mode [mode]
+/creeper-healing explosion_heal_delay [seconds]
+/creeper-healing block_placement_delay [seconds]
+/creeper-healing <setting> [true|false]        # any boolean setting, e.g. heal_tnt_explosions
+/creeper-healing <list> add <id>               # e.g. whitelist add minecraft:stone
+/creeper-healing <list> remove <id>
+/creeper-healing <list> list
+/creeper-healing replace_map add <old> <new>
+/creeper-healing replace_map remove <old>
+/creeper-healing replace_map list
 ```
 
-### 替换表（Replace Map）
+Boolean settings: `drop_items_on_mob_explosions`, `drop_items_on_block_explosions`, `drop_items_on_tnt_explosions`, `drop_items_on_triggered_explosions`, `drop_items_on_other_explosions`, `heal_mob_explosions`, `heal_block_explosions`, `heal_tnt_explosions`, `heal_triggered_explosions`, `heal_other_explosions`, `restore_block_nbt`, `force_blocks_with_nbt_to_always_heal`, `make_falling_blocks_fall`, `block_placement_sound_effect`, `block_placement_particles`, `heal_on_healing_potion_splash`, `heal_on_regeneration_potion_splash`, `enable_whitelist`.
 
-在配置文件中可以指定某个方块被恢复成另一种方块（例如钻石块恢复成石头），并保留原方块的属性（如朝向）：
+List settings: `heal_mob_explosions_blacklist`, `drop_items_on_mob_explosions_blacklist`, `whitelist`.
 
-```toml
-[replace_map]
-	"minecraft:diamond_block" = "minecraft:stone"
-```
+## Building from source
 
-> 警告：同一个键不能出现两次，否则会导致启动崩溃。
-
-### 其他设置
-
-- 恢复方块时是否播放放置音效 / 产生粒子
-- 向爆炸区域投掷**治疗药水**立即完成恢复，或投掷**再生药水**提前开始恢复
-
-### 指令
-
-所有设置都可以通过游戏内指令修改（需要 OP 权限），修改后会自动写入配置文件：
-
-- `/creeper-healing explosion_heal_delay [秒]`
-- `/creeper-healing block_placement_delay [秒]`
-- `/creeper-healing mode [模式名]`
-- `/creeper-healing heal_mob_explosions [true/false]` 等所有开关
-- `/creeper-healing heal_mob_explosions_blacklist add/remove/list <实体id>`
-- `/creeper-healing drop_items_on_mob_explosions_blacklist add/remove/list <实体id>`
-- `/creeper-healing whitelist add/remove/list <方块id>`
-- `/creeper-healing replace_map add/remove/list <旧方块> <新方块>`
-- `/creeper-healing reload_config` —— 重新读取配置文件
-
-不带参数执行某条指令会显示当前值。
-
-## 配置文件
-
-配置文件位于 `config/creeper-healing.toml`（首次启动自动生成）。修改后重启生效，或在游戏中执行 `/creeper-healing reload_config`。
-
-## 构建
-
-环境要求：**JDK 21**。
+Requirements: **JDK 21** (e.g. [Eclipse Temurin 21](https://adoptium.net/)).
 
 ```
 ./gradlew build
 ```
 
-构建产物位于 `build/libs/`，选择不带 `sources` 的 `.jar` 文件。
+The built jar is at `build/libs/creeperhealing-1.0.0.jar` (use the jar without `sources`).
 
-## 许可证
+## License & Credits
 
-LGPL-3.0（详见 [LICENSE](LICENSE)）。
-
-- 本模组移植自 [creeper-healing](https://github.com/ArkoSammy12/creeper-healing)（LGPL-3.0，作者 ArkoSammy12）。
-- 模组图标来自 [Kioku](https://github.com/takoyakioku)（原模组致谢）。
+- Licensed under the **GNU Lesser General Public License v3.0** — see [LICENSE](LICENSE).
+- This mod is a port of [creeper-healing](https://github.com/ArkoSammy12/creeper-healing) by [ArkoSammy12](https://github.com/ArkoSammy12) (LGPL-3.0).
+- Mod icon by [Kioku](https://github.com/takoyakioku) (as credited by the original mod).
+- The NeoForge MDK template (MIT) was used as the project skeleton.
