@@ -37,14 +37,6 @@ import java.util.Set;
 public class ExplosionEventHandler {
 
     @SubscribeEvent
-    public void onExplosionStart(ExplosionEvent.Start event) {
-        if (event.getLevel().isClientSide() || !(event.getLevel() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        ExplosionDropController.clearForLevel(serverLevel);
-    }
-
-    @SubscribeEvent
     public void onExplosionDetonate(ExplosionEvent.Detonate event) {
         Level level = event.getLevel();
         if (level.isClientSide()) {
@@ -75,22 +67,22 @@ public class ExplosionEventHandler {
             snapshots.put(pos, this.snapshotBlock(serverLevel, pos));
         }
 
-        // Drop policy for the finalizeExplosion phase of this explosion.
-        boolean dropItems = CreeperHealingConfig.dropsItemsFor(sourceType, causingMob);
-        Set<BlockPos> noItemDropPositions = new HashSet<>();
+        // Drop policy for the finalizeExplosion phase of this explosion. The blocks of a healable
+        // explosion never drop their items (they are restored shortly after; dropping them too
+        // would duplicate every destroyed block), so the drop_items_* settings do not apply here.
         Set<BlockPos> restoreContentsPositions = new HashSet<>();
         if (CreeperHealingConfig.restoreBlockNbt()) {
             for (BlockPos pos : affectedPositions) {
                 ExplosionContext.BlockSnapshot snapshot = snapshots.get(pos);
                 if (snapshot != null && snapshot.state().hasBlockEntity()) {
-                    // The block item and its contents will be restored later, so neither should drop.
-                    noItemDropPositions.add(pos);
+                    // The block's contents will be restored later, so they should not drop
+                    // (the block entity is removed before the block is destroyed).
                     restoreContentsPositions.add(pos);
                 }
             }
         }
         ExplosionDropController.setPolicy(serverLevel, explosion, affectedPositions, indirectlyAffectedPositions,
-                dropItems, noItemDropPositions, restoreContentsPositions);
+                restoreContentsPositions);
 
         int radius = ExplosionUtils.getMaxExplosionRadius(affectedPositions);
         BlockPos center = ExplosionUtils.calculateCenter(affectedPositions);

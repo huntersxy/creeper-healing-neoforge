@@ -31,7 +31,10 @@ Mob explosions (Creepers, Ghasts, …), block explosions (beds, respawn anchors,
 
 ### Item drop control
 
-Configure per source type whether explosions drop items. Container contents can also be kept (and restored together with the block's NBT data) via `restore_block_nbt`.
+Configure per source type whether explosions drop items. Blocks that are healed back never drop
+their items (drops plus restoration would duplicate every destroyed block), so these settings only
+affect explosion sources whose healing is disabled. Container contents can also be kept (and
+restored together with the block's NBT data) via `restore_block_nbt`.
 
 ### More
 

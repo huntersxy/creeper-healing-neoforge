@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.2] - unreleased
+
+### Fixed
+
+- Item duplication for blocks destroyed by explosions whose healing is enabled together with
+  item drops (e.g. TNT with `heal_tnt_explosions` enabled, where `drop_items_on_tnt_explosions`
+  defaults to `true`): the blocks of a healable explosion now never drop their items, since they
+  are restored shortly after. Previously an activated lever on a redstone lamp, for example,
+  would drop as an item *and* be healed back, leaving the player with two levers. The
+  `drop_items_*` settings now only apply to explosion sources whose healing is disabled.
+- Item duplication with nested explosions (e.g. creeper chains): the drop policy of an earlier
+  explosion is no longer discarded when a second explosion starts in the same tick, so the
+  blocks of the first explosion still get their drops suppressed.
+
 ## [1.0.1] - 2025-08-14
 
 ### Fixed

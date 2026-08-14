@@ -195,6 +195,7 @@ public final class CreeperHealingConfig {
         sb.append("\n");
 
         sb.append("# Toggle whether certain explosions should drop items. Does not include items stored in container blocks.\n");
+        sb.append("# Note: explosions whose blocks are healed never drop items (drops plus healing would duplicate every destroyed block), so these settings only affect explosions whose healing is disabled.\n");
         sb.append("[explosion_item_drops]\n");
         appendBool(sb, DROP_ITEMS_ON_MOB_EXPLOSIONS, "Whether to drop items on explosions caused by mobs such as Creepers.");
         appendBool(sb, DROP_ITEMS_ON_BLOCK_EXPLOSIONS, "Whether to drop items on explosions caused by blocks such as beds or end crystal blocks.");

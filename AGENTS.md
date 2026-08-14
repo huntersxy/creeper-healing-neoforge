@@ -71,8 +71,9 @@
 ### 掉落控制（三层，缺一不可）
 1. **爆炸直接破坏**：ExplosionDropsMixin @WrapMethod 包住 BlockStateBase.onExplosionHit，shouldSuppressDrops 为真时跳过 loot 但仍 state.onBlockExploded(...) 破坏方块。
 2. **容器内容**：抑制位置若 restore_block_nbt 开启，在破坏前 removeBlockEntity（否则 ChestBlock.onRemove 会把内容撒出来）。
-3. **邻居更新破坏**（火把/铁轨因支撑方块被炸而掉落）：BlockDropsEvent（注意是**独立类** net.neoforged.neoforge.event.level.BlockDropsEvent，不是 BlockEvent 的内部类）取消掉落——否则物品掉落+方块被恢复=复制物品（上游 issue #6 的修复）。
-4. 策略生命周期：**NeoForge 1.21.1 没有 ExplosionEvent.End**！策略在 Detonate 设置、下一个 Start 清理、LevelTickEvent.Post 兜底清理。所有掉落事件都在同一 tick 内同步发生，所以这个窗口是安全的。
+3. **邻居更新破坏**（火把/铁轨/拉杆因支撑方块被炸而掉落）：BlockDropsEvent（注意是**独立类** net.neoforged.neoforge.event.level.BlockDropsEvent，不是 BlockEvent 的内部类）取消掉落——否则物品掉落+方块被恢复=复制物品（上游 issue #6 的修复）。
+4. 策略生命周期：**NeoForge 1.21.1 没有 ExplosionEvent.End**！策略在 Detonate 设置、每维度一个策略列表（同一 tick 内多个爆炸——如苦力怕链——取并集判断，防止后一个爆炸覆盖前一个的掉落控制）、LevelTickEvent.Post 清空。所有掉落事件都在同一 tick 内同步发生，所以这个窗口是安全的。
+5. **被治疗的爆炸永不掉落物品**：无论 drop_items_* 配置如何，heal_* 开启的爆炸其受影响方块（主+间接）一律抑制掉落——掉落+恢复=复制方块（如"拉杆掉落又被恢复=两个拉杆"）。drop_items_* 只对未开启治疗的来源有意义（此时 mod 完全不介入，掉落行为是原版）。
 
 ### 恢复主循环
 - 每维度 ExplosionManager，LevelTickEvent.Post 调用 tick()。
