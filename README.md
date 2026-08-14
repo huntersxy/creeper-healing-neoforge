@@ -119,7 +119,7 @@ The built jar is at `build/libs/creeperhealing-1.0.0.jar` (use the jar without `
 
 ## License & Credits
 
-- Licensed under the **GNU Lesser General Public License v3.0** — see [LICENSE](LICENSE).
+- Licensed under the **GNU Lesser General Public License v2.1** — see [LICENSE](LICENSE).
 - This mod is a port of [creeper-healing](https://github.com/ArkoSammy12/creeper-healing) by [ArkoSammy12](https://github.com/ArkoSammy12) (LGPL-2.1).
 - Mod icon by [Kioku](https://github.com/takoyakioku) (as credited by the original mod).
 - The NeoForge MDK template (MIT) was used as the project skeleton.

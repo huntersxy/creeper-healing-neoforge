@@ -119,7 +119,7 @@
 
 ## 许可证与致谢
 
-- 基于 **GNU Lesser General Public License v3.0** 发布，详见 [LICENSE](LICENSE)。
+- 基于 **GNU Lesser General Public License v2.1** 发布，详见 [LICENSE](LICENSE)。
 - 本模组移植自 [creeper-healing](https://github.com/ArkoSammy12/creeper-healing)（作者 [ArkoSammy12](https://github.com/ArkoSammy12)，LGPL-2.1）。
 - 模组图标来自 [Kioku](https://github.com/takoyakioku)（原模组致谢）。
 - 项目骨架基于 NeoForge MDK 模板（MIT）。
