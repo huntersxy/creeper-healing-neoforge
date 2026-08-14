@@ -115,7 +115,7 @@
 ## Mixin 配置
 
 - src/main/resources/creeperhealing.mixins.json（package 指向 mixin 包）
-- src/main/templates/META-INF/neoforge.mods.toml 中 [[mixins]] 声明（\${mod_id}.mixins.json，构建时由 generateModMetadata 展开）
+- src/main/templates/META-INF/neoforge.mods.toml 中 [[mixins]] 声明（${mod_id}.mixins.json，构建时由 generateModMetadata 展开）
 - NeoForge 无需 refmap。新增 mixin 要同时改 json 清单。
 - 能用事件/API 解决的不要加 mixin（当前 2 个都是因为 NeoForge 1.21.1 无等价事件）。
 
