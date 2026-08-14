@@ -48,7 +48,7 @@
 ## 安装
 
 1. 安装 [Minecraft 1.21.1 的 NeoForge](https://neoforged.net/) 并至少启动一次。
-2. 将 `creeperhealing-1.0.0.jar` 放入客户端或服务端的 `mods/` 文件夹。
+2. 将 `creeperhealing-1.0.1.jar` 放入客户端或服务端的 `mods/` 文件夹。
 3. 启动游戏。首次启动会自动生成配置文件 `config/creeper-healing.toml`。
 
 ## 配置文件
@@ -115,7 +115,7 @@
 ./gradlew build
 ```
 
-构建产物位于 `build/libs/creeperhealing-1.0.0.jar`（取不带 `sources` 的那个 jar）。
+构建产物位于 `build/libs/creeperhealing-1.0.1.jar`（取不带 `sources` 的那个 jar）。
 
 ## 许可证与致谢
 

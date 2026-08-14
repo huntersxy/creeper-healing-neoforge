@@ -89,7 +89,8 @@ public class ExplosionEventHandler {
                 }
             }
         }
-        ExplosionDropController.setPolicy(serverLevel, explosion, affectedPositions, dropItems, noItemDropPositions, restoreContentsPositions);
+        ExplosionDropController.setPolicy(serverLevel, explosion, affectedPositions, indirectlyAffectedPositions,
+                dropItems, noItemDropPositions, restoreContentsPositions);
 
         int radius = ExplosionUtils.getMaxExplosionRadius(affectedPositions);
         BlockPos center = ExplosionUtils.calculateCenter(affectedPositions);
@@ -99,6 +100,18 @@ public class ExplosionEventHandler {
         ExplosionManager manager = ExplosionManagerRegistry.get(serverLevel);
         if (manager != null) {
             manager.addExplosion(context);
+        }
+    }
+
+    /**
+     * Suppresses the drops of blocks that are broken by a neighbor update instead of directly
+     * by the explosion (e.g. torches or rails whose supporting block was destroyed). Without
+     * this, their items would drop and the blocks would also be healed back, duplicating them.
+     */
+    @SubscribeEvent
+    public void onBlockDrops(net.neoforged.neoforge.event.level.BlockDropsEvent event) {
+        if (ExplosionDropController.shouldSuppressNeighborBreakDrops(event.getLevel(), event.getPos())) {
+            event.setCanceled(true);
         }
     }
 

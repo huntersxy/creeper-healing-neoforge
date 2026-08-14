@@ -48,7 +48,7 @@ Configure per source type whether explosions drop items. Container contents can 
 ## Installation
 
 1. Install [NeoForge for Minecraft 1.21.1](https://neoforged.net/) and run it once.
-2. Put `creeperhealing-1.0.0.jar` into the `mods/` folder of your client or server.
+2. Put `creeperhealing-1.0.1.jar` into the `mods/` folder of your client or server.
 3. Start the game. The configuration file `config/creeper-healing.toml` is generated on first launch.
 
 ## Configuration
@@ -115,7 +115,7 @@ Requirements: **JDK 21** (e.g. [Eclipse Temurin 21](https://adoptium.net/)).
 ./gradlew build
 ```
 
-The built jar is at `build/libs/creeperhealing-1.0.0.jar` (use the jar without `sources`).
+The built jar is at `build/libs/creeperhealing-1.0.1.jar` (use the jar without `sources`).
 
 ## License & Credits
 

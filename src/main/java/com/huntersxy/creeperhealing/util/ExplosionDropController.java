@@ -31,9 +31,27 @@ public final class ExplosionDropController {
     }
 
     public static void setPolicy(ServerLevel level, Explosion explosion, List<BlockPos> positions,
+                                 List<BlockPos> indirectlyAffectedPositions,
                                  boolean dropItems, Set<BlockPos> noItemDropPositions,
                                  Set<BlockPos> restoreContentsPositions) {
-        POLICIES.put(level, new DropPolicy(explosion, positions, dropItems, noItemDropPositions, restoreContentsPositions));
+        POLICIES.put(level, new DropPolicy(explosion, positions, indirectlyAffectedPositions, dropItems, noItemDropPositions, restoreContentsPositions));
+    }
+
+    /**
+     * Returns whether the drops of a block broken by a neighbor update (not directly by the
+     * explosion) should be suppressed. Blocks whose support was destroyed (torches, rails, ...)
+     * are broken by the game's neighbor-update logic and would otherwise drop their items,
+     * effectively duplicating them since the blocks are healed back.
+     */
+    public static boolean shouldSuppressNeighborBreakDrops(Level level, BlockPos pos) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return false;
+        }
+        DropPolicy policy = POLICIES.get(serverLevel);
+        if (policy == null || policy.dropItems) {
+            return false;
+        }
+        return policy.positions.contains(pos) || policy.indirectPositions.contains(pos);
     }
 
     public static void clearForLevel(ServerLevel level) {
@@ -64,11 +82,12 @@ public final class ExplosionDropController {
     }
 
     /** Drop policy of the explosion that is currently finalizing. */
-    private record DropPolicy(Explosion explosion, Set<BlockPos> positions, boolean dropItems,
-                              Set<BlockPos> noItemDropPositions, Set<BlockPos> restoreContentsPositions) {
-        private DropPolicy(Explosion explosion, List<BlockPos> positions, boolean dropItems,
-                           Set<BlockPos> noItemDropPositions, Set<BlockPos> restoreContentsPositions) {
-            this(explosion, new HashSet<>(positions), dropItems, noItemDropPositions, restoreContentsPositions);
+    private record DropPolicy(Explosion explosion, Set<BlockPos> positions, Set<BlockPos> indirectPositions,
+                              boolean dropItems, Set<BlockPos> noItemDropPositions, Set<BlockPos> restoreContentsPositions) {
+        private DropPolicy(Explosion explosion, List<BlockPos> positions, List<BlockPos> indirectlyAffectedPositions,
+                           boolean dropItems, Set<BlockPos> noItemDropPositions, Set<BlockPos> restoreContentsPositions) {
+            this(explosion, new HashSet<>(positions), new HashSet<>(indirectlyAffectedPositions),
+                    dropItems, noItemDropPositions, restoreContentsPositions);
         }
     }
 }

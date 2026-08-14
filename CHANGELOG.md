@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.1] - 2025-08-14
+
+### Fixed
+
+- Prevent item duplication for support-dependent blocks (torches, rails, lanterns, ...):
+  when their supporting block is destroyed by an explosion, the neighbor-update break no
+  longer drops their items, since the blocks are healed back.
+  (Mirrors the fix for upstream issue ArkoSammy12/creeper-healing#6.)
+
+## [1.0.0] - 2025-08-14
+
 ## [1.0.0] - 2025-08-14
 
 Initial release — NeoForge 1.21.1 port of creeper-healing (by ArkoSammy12).
