@@ -1,0 +1,55 @@
+name: Alpha to Modrinth
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  alpha:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Determine alpha version
+        id: version
+        run: |
+          BASE_VER=$(grep '^mod_version=' gradle.properties | cut -d= -f2 | tr -d ' ')
+          SHORT_SHA=${{ github.sha }}
+          SHORT_SHA=${SHORT_SHA:0:7}
+          echo "alpha_version=${BASE_VER}-alpha.${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "Base version: ${BASE_VER}, alpha version: ${BASE_VER}-alpha.${SHORT_SHA}"
+
+      - name: Build with Gradle
+        run: ./gradlew build -Pmod_version="${{ steps.version.outputs.alpha_version }}" --console=plain
+
+      - name: Publish alpha to Modrinth
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          ALPHA_VERSION: ${{ steps.version.outputs.alpha_version }}
+        run: |
+          JAR=$(ls build/libs/creeperhealing-*.jar | grep -v sources | head -1)
+          echo "Uploading ${JAR} as ${ALPHA_VERSION}"
+          jq -n --arg v "$ALPHA_VERSION" --arg sha "${{ github.sha }}" \
+            '{project_id:"8sODLw2O", name:("Creeper Healing " + $v), version_number:$v, changelog:("Automatic alpha build from commit " + $sha), dependencies:[], game_versions:["1.21.1"], release_channel:"alpha", loaders:["neoforge"], featured:false, status:"listed", file_parts:["jar"], primary_file:"jar"}' \
+            > /tmp/alpha-data.json
+          RESP=$(curl -s -X POST https://api.modrinth.com/v2/version \
+            -H "Authorization: Bearer ${MODRINTH_TOKEN}" \
+            -H "User-Agent: creeper-healing-alpha-ci" \
+            -F "data=@/tmp/alpha-data.json" \
+            -F "jar=@${JAR}")
+          echo "$RESP"
+          echo "$RESP" | grep -q '"id"' || { echo "Modrinth upload failed"; exit 1; }
