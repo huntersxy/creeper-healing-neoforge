@@ -1,5 +1,7 @@
 name: Alpha to Modrinth
 
+# push main 时自动发布 alpha 到 Modrinth，并删除此前的旧 alpha（只保留本次上传的；
+# beta/release 版本不受影响）。
 on:
   push:
     branches: [main]
@@ -41,6 +43,7 @@ jobs:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           ALPHA_VERSION: ${{ steps.version.outputs.alpha_version }}
         run: |
+          set -e
           JAR=$(ls build/libs/creeperhealing-*.jar | grep -v sources | head -1)
           echo "Uploading ${JAR} as ${ALPHA_VERSION}"
           jq -n --arg v "$ALPHA_VERSION" --arg sha "${{ github.sha }}" \
@@ -53,3 +56,15 @@ jobs:
             -F "jar=@${JAR}")
           echo "$RESP"
           echo "$RESP" | grep -q '"id"' || { echo "Modrinth upload failed"; exit 1; }
+          NEW_ID=$(echo "$RESP" | jq -r .id)
+
+          # 删除旧 alpha（version_type=alpha），只保留本次上传的；beta/release 一律不动
+          echo "Cleaning up previous alpha versions..."
+          ALL=$(curl -s -H "Authorization: Bearer ${MODRINTH_TOKEN}" -H "User-Agent: creeper-healing-alpha-ci" "https://api.modrinth.com/v2/project/8sODLw2O/version")
+          echo "$ALL" | jq -r '.[] | select(.version_type == "alpha") | .id' | while read -r OLD; do
+            if [ "$OLD" = "$NEW_ID" ]; then continue; fi
+            echo "Deleting old alpha ${OLD}"
+            curl -s -X DELETE "https://api.modrinth.com/v2/version/${OLD}" \
+              -H "Authorization: Bearer ${MODRINTH_TOKEN}" \
+              -H "User-Agent: creeper-healing-alpha-ci" || echo "  !! delete failed for ${OLD}"
+          done
