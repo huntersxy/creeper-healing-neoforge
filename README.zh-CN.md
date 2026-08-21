@@ -2,17 +2,17 @@
 
 一个服务端为主、高度可自定义的 **NeoForge** 模组，能让世界在苦力怕爆炸（以及其他类型的爆炸）后自动、自然地恢复地形。
 
-本模组是 [creeper-healing](https://github.com/ArkoSammy12/creeper-healing)（作者 **ArkoSammy12**，Fabric 版，LGPL-2.1）的 **NeoForge 1.21.1 移植版**。全部代码基于 NeoForge API 重写，保留原模组全部功能，并对 NeoForge 平台做了针对性优化。
+本模组是 [creeper-healing](https://github.com/ArkoSammy12/creeper-healing)（作者 **ArkoSammy12**，Fabric 版，LGPL-2.1）的 **NeoForge 1.21.1 / 1.21.8 / 1.21.10 移植版**（Stonecutter 多版本）。全部代码基于 NeoForge API 重写，保留原模组全部功能，并对 NeoForge 平台做了针对性优化。
 
 > ⚠️ 这是非官方移植。遇到问题请在本仓库反馈，不要打扰原项目。
 
 ## 环境要求
 
-| | |
-|---|---|
-| Minecraft | 1.21.1 |
-| NeoForge | **21.1.x**（任意小版本，如 21.1.0 – 21.1.244） |
-| Java | 21 |
+| Minecraft | NeoForge | Java |
+|---|---|---|
+| 1.21.1 | **21.1.x** (21.1.244) | 21 |
+| 1.21.8 | **21.8.x** (21.8.54) | 21 |
+| 1.21.10 | **21.10.x** (21.10.64) | 21 |
 
 ## 功能
 
@@ -47,8 +47,8 @@
 
 ## 安装
 
-1. 安装 [Minecraft 1.21.1 的 NeoForge](https://neoforged.net/) 并至少启动一次。
-2. 将 `creeperhealing-1.0.1.jar` 放入客户端或服务端的 `mods/` 文件夹。
+1. 安装对应 Minecraft 版本的 [NeoForge](https://neoforged.net/) 并至少启动一次。
+2. 将对应版本的 `creeperhealing-1.1.0+<mc>.jar`（`+1.21.1` / `+1.21.8` / `+1.21.10`）放入 `mods/`。
 3. 启动游戏。首次启动会自动生成配置文件 `config/creeper-healing.toml`。
 
 ## 配置文件
@@ -112,10 +112,14 @@
 环境要求：**JDK 21**（如 [Eclipse Temurin 21](https://adoptium.net/)）。
 
 ```
-./gradlew build
+./gradlew build                          # 活动版本 1.21.1
+./gradlew :1.21.8-neoforge:build         # 1.21.8
+./gradlew :1.21.10-neoforge:build        # 1.21.10
+./gradlew buildAndCollect                # 三版本，位于 build/libs/<mc>/
+./gradlew :1.21.1-neoforge:runGameTestServer  # 无头冒烟（1.21.8/1.21.10 同理）
 ```
 
-构建产物位于 `build/libs/creeperhealing-1.0.1.jar`（取不带 `sources` 的那个 jar）。
+产物位于 `build/libs/<mc>/creeperhealing-1.1.0+<mc>.jar`。
 
 ## 许可证与致谢
 

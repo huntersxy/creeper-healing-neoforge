@@ -171,6 +171,16 @@ public abstract class AbstractExplosionEvent implements ExplosionEvent {
 
     /** Reconstructs an event from its serialized form. */
     public static ExplosionEvent load(CompoundTag tag, HolderLookup.Provider registries) {
+        //? if >=1.21.8 {
+        /*ExplosionHealingMode mode = ExplosionHealingMode.getFromName(tag.getString("mode").orElse(""));
+        long healTimer = tag.getLong("heal_timer").orElse(0L);
+        int blockCounter = tag.getInt("block_counter").orElse(0);
+        int radius = tag.getInt("radius").orElse(0);
+        int[] center = tag.getIntArray("center").orElse(new int[0]);
+        BlockPos centerPos = center.length == 3 ? new BlockPos(center[0], center[1], center[2]) : BlockPos.ZERO;
+        List<AffectedBlock> blocks = new ArrayList<>();
+        ListTag blockList = tag.getListOrEmpty("blocks");
+        *///?} else {
         ExplosionHealingMode mode = ExplosionHealingMode.getFromName(tag.getString("mode"));
         long healTimer = tag.getLong("heal_timer");
         int blockCounter = tag.getInt("block_counter");
@@ -179,6 +189,7 @@ public abstract class AbstractExplosionEvent implements ExplosionEvent {
         BlockPos centerPos = center.length == 3 ? new BlockPos(center[0], center[1], center[2]) : BlockPos.ZERO;
         List<AffectedBlock> blocks = new ArrayList<>();
         ListTag blockList = tag.getList("blocks", Tag.TAG_COMPOUND);
+        //?}
         for (Tag blockTag : blockList) {
             AffectedBlock block = AffectedBlock.load((CompoundTag) blockTag, registries);
             if (block != null) {

@@ -1,6 +1,18 @@
 # Changelog
 
-## [1.0.2] - unreleased
+## [1.1.0] - 2026-08-21
+
+### Added
+
+- Multi-version support via Stonecutter: `1.21.1` (NeoForge 21.1.244), `1.21.8` (21.8.54) and `1.21.10` (21.10.64) are now built from a single codebase (`src/main/java` with `//? if >=1.21.8` branches). Each version has its own `pack_format` (34/69/77) and `neo_version_range`.
+- Headless smoke tests via `runGameTestServer`: `empty` (24³) structure + `CreeperHealingGameTests` (`testModLoads` / `testTntHealing`) for the explosion→heal chain, verified on all three versions. The `build` workflow now runs `./gradlew :<mc>-neoforge:build` and `:runGameTestServer` per version via a matrix, and `alpha` publishes three Modrinth versions (`game_versions: ["1.21.1"]` etc.).
+- `pack.mcmeta` now declares `supported_formats` for 1.21.10+.
+
+### Fixed
+
+- NeoForge 1.21.8+ `SavedData` API (removed `Factory`/`save(CompoundTag,Provider)`, now `SavedDataType` + `Codec` via `CompoundTag.CODEC`), `CompoundTag` getters (`Optional` + `getListOrEmpty`), `MobEffects.HEAL` → `INSTANT_HEALTH`, `ThrownPotion` → `ThrownSplashPotion`, `Registry#get` → `Optional<Holder>`, `BlockState#onBlockExploded` `(Level → ServerLevel)` and `ExplosionDropsMixin` `@WrapMethod` signature.
+
+## [1.0.2] - 2026-08-21
 
 ### Fixed
 

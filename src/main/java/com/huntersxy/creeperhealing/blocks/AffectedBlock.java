@@ -66,23 +66,38 @@ public interface AffectedBlock {
     /** Reconstructs an affected block from its serialized form; returns null on failure. */
     @Nullable
     static AffectedBlock load(CompoundTag tag, HolderLookup.Provider registries) {
+        //? if >=1.21.8 {
+        /*boolean isDouble = "double".equals(tag.getString("type").orElse(""));
+        int[] posArr = tag.getIntArray("pos").orElse(new int[0]);
+        *///?} else {
         boolean isDouble = "double".equals(tag.getString("type"));
         int[] posArr = tag.getIntArray("pos");
+        //?}
         BlockPos pos = new BlockPos(posArr[0], posArr[1], posArr[2]);
         BlockState state = BlockState.CODEC.decode(registries.createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE), tag.get("state"))
                 .result().map(pair -> pair.getFirst()).orElse(null);
         if (state == null) {
             return null;
         }
+        //? if >=1.21.8 {
+        /*CompoundTag nbt = tag.contains("nbt") ? tag.getCompound("nbt").orElse(null) : null;
+        long timer = tag.getLong("timer").orElse(0L);
+        boolean placed = tag.getBoolean("placed").orElse(false);
+        *///?} else {
         CompoundTag nbt = tag.contains("nbt", net.minecraft.nbt.Tag.TAG_COMPOUND) ? tag.getCompound("nbt") : null;
         long timer = tag.getLong("timer");
         boolean placed = tag.getBoolean("placed");
+        //?}
         if (!isDouble) {
             return new SingleAffectedBlock(pos, state, nbt, timer, placed);
         }
         BlockPos secondHalfPos = null;
         if (tag.contains("second_half_pos")) {
+            //? if >=1.21.8 {
+            /*int[] halfArr = tag.getIntArray("second_half_pos").orElse(new int[0]);
+            *///?} else {
             int[] halfArr = tag.getIntArray("second_half_pos");
+            //?}
             secondHalfPos = new BlockPos(halfArr[0], halfArr[1], halfArr[2]);
         }
         BlockState secondHalfState = null;
@@ -90,7 +105,11 @@ public interface AffectedBlock {
             secondHalfState = BlockState.CODEC.decode(registries.createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE), tag.get("second_half_state"))
                     .result().map(pair -> pair.getFirst()).orElse(null);
         }
+        //? if >=1.21.8 {
+        /*CompoundTag secondHalfNbt = tag.contains("second_half_nbt") ? tag.getCompound("second_half_nbt").orElse(null) : null;
+        *///?} else {
         CompoundTag secondHalfNbt = tag.contains("second_half_nbt", net.minecraft.nbt.Tag.TAG_COMPOUND) ? tag.getCompound("second_half_nbt") : null;
+        //?}
         return new DoubleAffectedBlock(pos, state, nbt, secondHalfPos, secondHalfState, secondHalfNbt, timer, placed);
     }
 }

@@ -2,17 +2,17 @@
 
 A server-side, highly customizable **NeoForge** mod that automatically and naturally heals Creeper explosions — and other types of explosions — restoring the terrain of your world.
 
-This is a **NeoForge 1.21.1 port** of [creeper-healing](https://github.com/ArkoSammy12/creeper-healing) by **ArkoSammy12** (Fabric, LGPL-2.1). All code was rewritten for the NeoForge API; the original feature set is preserved and several parts were optimized for the NeoForge platform.
+This is a **NeoForge 1.21.1 / 1.21.8 / 1.21.10 port** of [creeper-healing](https://github.com/ArkoSammy12/creeper-healing) by **ArkoSammy12** (Fabric, LGPL-2.1). All code was rewritten for the NeoForge API (Stonecutter multi-version); the original feature set is preserved and several parts were optimized for the NeoForge platform.
 
 > ⚠️ This is an unofficial port. If you run into problems, please report them here rather than on the original project's issue tracker.
 
 ## Requirements
 
-| | |
-|---|---|
-| Minecraft | 1.21.1 |
-| NeoForge | **21.1.x** (any minor version, e.g. 21.1.0 – 21.1.244) |
-| Java | 21 |
+| Minecraft | NeoForge | Java |
+|---|---|---|
+| 1.21.1 | **21.1.x** (21.1.244) | 21 |
+| 1.21.8 | **21.8.x** (21.8.54) | 21 |
+| 1.21.10 | **21.10.x** (21.10.64) | 21 |
 
 ## Features
 
@@ -50,8 +50,8 @@ restored together with the block's NBT data) via `restore_block_nbt`.
 
 ## Installation
 
-1. Install [NeoForge for Minecraft 1.21.1](https://neoforged.net/) and run it once.
-2. Put `creeperhealing-1.0.1.jar` into the `mods/` folder of your client or server.
+1. Install the matching [NeoForge](https://neoforged.net/) for your Minecraft version and run it once.
+2. Put the matching `creeperhealing-1.1.0+<mc>.jar` (`+1.21.1`, `+1.21.8` or `+1.21.10`) into the `mods/` folder.
 3. Start the game. The configuration file `config/creeper-healing.toml` is generated on first launch.
 
 ## Configuration
@@ -115,10 +115,14 @@ List settings: `heal_mob_explosions_blacklist`, `drop_items_on_mob_explosions_bl
 Requirements: **JDK 21** (e.g. [Eclipse Temurin 21](https://adoptium.net/)).
 
 ```
-./gradlew build
+./gradlew build                          # active version (1.21.1)
+./gradlew :1.21.8-neoforge:build         # 1.21.8
+./gradlew :1.21.10-neoforge:build        # 1.21.10
+./gradlew buildAndCollect                # all three, jars in build/libs/<mc>/
+./gradlew :1.21.1-neoforge:runGameTestServer  # headless smoke test (also 1.21.8 / 1.21.10)
 ```
 
-The built jar is at `build/libs/creeperhealing-1.0.1.jar` (use the jar without `sources`).
+Artifacts are at `build/libs/<mc>/creeperhealing-<ver>+<mc>.jar` (e.g. `creeperhealing-1.1.0+1.21.1.jar`).
 
 ## License & Credits
 

@@ -9,7 +9,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.projectile.Projectile;
+//? if >=1.21.8 {
+/*import net.minecraft.world.entity.projectile.ThrownSplashPotion;
+*///?} else {
 import net.minecraft.world.entity.projectile.ThrownPotion;
+//?}
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
@@ -27,9 +31,15 @@ public class PotionEventHandler {
     @SubscribeEvent
     public void onProjectileImpact(ProjectileImpactEvent event) {
         Projectile projectile = event.getProjectile();
+        //? if >=1.21.8 {
+        /*if (!(projectile instanceof ThrownSplashPotion potion)) {
+            return;
+        }
+        *///?} else {
         if (!(projectile instanceof ThrownPotion potion)) {
             return;
         }
+        //?}
         if (!potion.getItem().is(Items.SPLASH_POTION)) {
             return;
         }
@@ -53,7 +63,11 @@ public class PotionEventHandler {
         boolean hasInstantHealth = false;
         boolean hasRegeneration = false;
         for (MobEffectInstance effectInstance : potionContents.getAllEffects()) {
+            //? if >=1.21.8 {
+            /*if (effectInstance.getEffect().is(MobEffects.INSTANT_HEALTH)) {
+            *///?} else {
             if (effectInstance.getEffect().is(MobEffects.HEAL)) {
+            //?}
                 hasInstantHealth = true;
             }
             if (effectInstance.getEffect().is(MobEffects.REGENERATION)) {

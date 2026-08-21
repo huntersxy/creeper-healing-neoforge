@@ -6,7 +6,11 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
+//? if >=1.21.8 {
+/*import net.minecraft.server.level.ServerLevel;
+*///?} else {
 import net.minecraft.world.level.Level;
+//?}
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,10 +33,14 @@ public abstract class ExplosionDropsMixin {
     }
 
     @WrapMethod(method = "onExplosionHit")
+    //? if >=1.21.8 {
+    /*private void creeperhealing$suppressExplosionDrops(ServerLevel level, BlockPos pos, Explosion explosion,
+                                                       BiConsumer<ItemStack, BlockPos> dropConsumer, Operation<Void> original) {
+        *///?} else {
     private void creeperhealing$suppressExplosionDrops(Level level, BlockPos pos, Explosion explosion,
                                                        BiConsumer<ItemStack, BlockPos> dropConsumer, Operation<Void> original) {
+    //?}
         if (ExplosionDropController.shouldSuppressDrops(level, pos)) {
-            // Destroy the block without dropping anything, mirroring the original flow.
             BlockState state = level.getBlockState(pos);
             if (!state.isAir() && explosion.getBlockInteraction() != Explosion.BlockInteraction.TRIGGER_BLOCK) {
                 state.onBlockExploded(level, pos, explosion);

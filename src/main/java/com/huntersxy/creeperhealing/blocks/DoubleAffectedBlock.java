@@ -120,7 +120,14 @@ public class DoubleAffectedBlock extends SingleAffectedBlock {
         String replaceMapValue = CreeperHealingConfig.getReplaceMap().get(blockIdentifier);
         // Hardcode an exception to allow beds to be replaced with other blocks despite them having an Nbt tag.
         if (replaceMapValue != null && (!this.shouldForceHeal() || firstHalfState.is(BlockTags.BEDS))) {
+            //? if >=1.21.8 {
+            /*Block replacementBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(replaceMapValue)).map(net.minecraft.core.Holder::value).orElse(null);
+            *///?} else {
             Block replacementBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(replaceMapValue));
+            //?}
+            if (replacementBlock == null) {
+                return;
+            }
             firstHalfState = SingleAffectedBlock.copyMatchingProperties(firstHalfState, replacementBlock.defaultBlockState());
             secondHalfState = SingleAffectedBlock.copyMatchingProperties(secondHalfState, replacementBlock.defaultBlockState());
             stateReplaced = true;

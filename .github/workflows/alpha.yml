@@ -1,7 +1,8 @@
 name: Alpha to Modrinth
 
 # push main 时自动发布 alpha 到 Modrinth，并删除此前的旧 alpha（只保留本次上传的；
-# beta/release 版本不受影响）。
+# beta/release 版本不受影响）。适配多版本：为 1.21.1 / 1.21.8 / 1.21.10 各自上传一个
+# Modrinth 版本，game_versions 与 jar 一一对应。
 on:
   push:
     branches: [main]
@@ -35,34 +36,46 @@ jobs:
           echo "alpha_version=${BASE_VER}-alpha.${SHORT_SHA}" >> "$GITHUB_OUTPUT"
           echo "Base version: ${BASE_VER}, alpha version: ${BASE_VER}-alpha.${SHORT_SHA}"
 
-      - name: Build with Gradle
-        run: ./gradlew build -Pmod_version="${{ steps.version.outputs.alpha_version }}" --console=plain
+      - name: Build all versions
+        run: ./gradlew clean build --console=plain -Pmod_version="${{ steps.version.outputs.alpha_version }}"
 
-      - name: Publish alpha to Modrinth
+      - name: Collect all jars
+        run: |
+          ./gradlew :1.21.1-neoforge:buildAndCollect :1.21.8-neoforge:buildAndCollect :1.21.10-neoforge:buildAndCollect --console=plain -Pmod_version="${{ steps.version.outputs.alpha_version }}"
+          ls -R build/libs
+
+      - name: Publish alphas to Modrinth
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           ALPHA_VERSION: ${{ steps.version.outputs.alpha_version }}
         run: |
           set -e
-          JAR=$(ls build/libs/creeperhealing-*.jar | grep -v sources | head -1)
-          echo "Uploading ${JAR} as ${ALPHA_VERSION}"
-          jq -n --arg v "$ALPHA_VERSION" --arg sha "${{ github.sha }}" \
-            '{project_id:"8sODLw2O", name:("Creeper Healing " + $v), version_number:$v, changelog:("Automatic alpha build from commit " + $sha), dependencies:[], game_versions:["1.21.1"], release_channel:"alpha", loaders:["neoforge"], featured:false, status:"listed", file_parts:["jar"], primary_file:"jar"}' \
-            > /tmp/alpha-data.json
-          RESP=$(curl -s -X POST https://api.modrinth.com/v2/version \
-            -H "Authorization: Bearer ${MODRINTH_TOKEN}" \
-            -H "User-Agent: creeper-healing-alpha-ci" \
-            -F "data=@/tmp/alpha-data.json" \
-            -F "jar=@${JAR}")
-          echo "$RESP"
-          echo "$RESP" | grep -q '"id"' || { echo "Modrinth upload failed"; exit 1; }
-          NEW_ID=$(echo "$RESP" | jq -r .id)
+          for MC in 1.21.1 1.21.8 1.21.10; do
+            JAR=$(ls build/libs/${MC}/creeperhealing-${ALPHA_VERSION}*.jar | head -1)
+            if [ -z "$JAR" ]; then echo "No jar for $MC"; exit 1; fi
+            # version_number is like 1.0.2-alpha.abc1234+1.21.1 (from jar name)
+            VER=$(basename "$JAR" | sed -E 's/creeperhealing-(.+)\.jar/\1/')
+            echo "Uploading $JAR as $VER (MC $MC)"
+            jq -n --arg v "$VER" --arg sha "${{ github.sha }}" --arg mc "$MC" \
+              '{project_id:"8sODLw2O", name:("Creeper Healing " + $v), version_number:$v, changelog:("Automatic alpha build from commit " + $sha + " (MC " + $mc + ")"), dependencies:[], game_versions:[$mc], release_channel:"alpha", loaders:["neoforge"], featured:false, status:"listed", file_parts:["jar"], primary_file:"jar"}' \
+              > /tmp/alpha-data-${MC}.json
+            RESP=$(curl -s -X POST https://api.modrinth.com/v2/version \
+              -H "Authorization: Bearer ${MODRINTH_TOKEN}" \
+              -H "User-Agent: creeper-healing-alpha-ci" \
+              -F "data=@/tmp/alpha-data-${MC}.json" \
+              -F "jar=@${JAR}")
+            echo "$RESP"
+            echo "$RESP" | grep -q '"id"' || { echo "Modrinth upload failed for $MC"; exit 1; }
+            # 收集新 ID 供后续清理使用（简单方案：不再按单次上传清理，而是保留本次上传的 3 个）
+            echo "$RESP" | jq -r .id >> /tmp/new_ids.txt
+          done
+          echo "All 3 alphas uploaded, new IDs:"
+          cat /tmp/new_ids.txt
 
-          # 删除旧 alpha（version_type=alpha），只保留本次上传的；beta/release 一律不动
-          echo "Cleaning up previous alpha versions..."
+          echo "Cleaning up previous alpha versions (keep only the 3 just uploaded)..."
           ALL=$(curl -s -H "Authorization: Bearer ${MODRINTH_TOKEN}" -H "User-Agent: creeper-healing-alpha-ci" "https://api.modrinth.com/v2/project/8sODLw2O/version")
           echo "$ALL" | jq -r '.[] | select(.version_type == "alpha") | .id' | while read -r OLD; do
-            if [ "$OLD" = "$NEW_ID" ]; then continue; fi
+            if grep -q "$OLD" /tmp/new_ids.txt; then continue; fi
             echo "Deleting old alpha ${OLD}"
             curl -s -X DELETE "https://api.modrinth.com/v2/version/${OLD}" \
               -H "Authorization: Bearer ${MODRINTH_TOKEN}" \

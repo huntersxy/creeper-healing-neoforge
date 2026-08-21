@@ -17,7 +17,9 @@ import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.ChestType;
+//? if <1.21.8 {
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+//?}
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
@@ -125,7 +127,14 @@ public class SingleAffectedBlock implements AffectedBlock {
         String blockIdentifier = BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
         String replaceMapValue = CreeperHealingConfig.getReplaceMap().get(blockIdentifier);
         if (replaceMapValue != null && !this.shouldForceHeal()) {
+            //? if >=1.21.8 {
+            /*Block replacementBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(replaceMapValue)).map(net.minecraft.core.Holder::value).orElse(null);
+            *///?} else {
             Block replacementBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(replaceMapValue));
+            //?}
+            if (replacementBlock == null) {
+                return;
+            }
             state = copyMatchingProperties(state, replacementBlock.defaultBlockState());
             stateReplaced = true;
         }

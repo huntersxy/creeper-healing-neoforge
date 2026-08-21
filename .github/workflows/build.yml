@@ -5,6 +5,10 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mc: ["1.21.1", "1.21.8", "1.21.10"]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,5 +25,18 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build ${{ matrix.mc }}-neoforge
+        run: ./gradlew :${{ matrix.mc }}-neoforge:build --console=plain
+
+      - name: GameTest ${{ matrix.mc }}-neoforge (headless)
+        run: ./gradlew :${{ matrix.mc }}-neoforge:runGameTestServer --console=plain
+
+      - name: Collect jar ${{ matrix.mc }}
+        run: ./gradlew :${{ matrix.mc }}-neoforge:buildAndCollect --console=plain
+
+      - name: Upload artifact ${{ matrix.mc }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: creeperhealing-${{ matrix.mc }}
+          path: build/libs/${{ matrix.mc }}/creeperhealing-*.jar
+          if-no-files-found: error
